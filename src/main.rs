@@ -3,9 +3,12 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 use std::io::prelude::*;
 
-
+enum StatusCode {
+    Ok = 200,
+    NotFound = 404
+}
 fn main() {
-    let listener = TcpListener::bind("0.0.0.0:8080").unwrap();
+    let listener = TcpListener::bind("0.0.0.0:3000").unwrap();
 
     print!("Server Started \n");
 
@@ -13,11 +16,6 @@ fn main() {
         let stream = stream.unwrap();
         handle_connection(stream);
     }
-}
-
-enum StatusCode {
-    Ok = 200,
-    NotFound = 404
 }
 
 fn handle_connection(mut stream: TcpStream) {

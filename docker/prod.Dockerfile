@@ -6,8 +6,8 @@ WORKDIR /app
 
 ADD . /app/
 
-RUN cargo build
+RUN cargo build --release
 
-# RUN set -x && ls -lah /app/target/debug/
+RUN set -x && ls -lah /app/target/release
 
-CMD ["/app/target/debug/docker-rust-seed"]
+CMD ["/app/target/release/docker-rust-seed"]
