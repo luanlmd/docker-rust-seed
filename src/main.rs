@@ -1,4 +1,5 @@
 use std::fs;
+use std::env;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::io::prelude::*;
@@ -8,7 +9,9 @@ enum StatusCode {
     NotFound = 404
 }
 fn main() {
-    let listener = TcpListener::bind("0.0.0.0:3000").unwrap();
+    let addr = String::from("0.0.0.0");
+    let port = env::var("PORT").unwrap_or(String::from("3000"));
+    let listener = TcpListener::bind(addr + ":" + &port).unwrap();
 
     print!("Server Started \n");
 
