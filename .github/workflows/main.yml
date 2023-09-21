@@ -13,3 +13,6 @@ jobs:
 
       - name: Docker Build
         run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v${{ github.run_number }}
+
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
