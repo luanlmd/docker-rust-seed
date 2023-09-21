@@ -28,5 +28,5 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v1'
         with:
           region: southamerica-east1
-          service: 'deno'
-          image: 'luanlmd/docker-deno-seed:v${{ github.run_number }}'
+          service: 'rust'
+          image: 'luanlmd/docker-rust-seed:v${{ github.run_number }}'
