@@ -1,6 +1,6 @@
 version: "3"
 services:
-  signer:
+  app:
     build:
       dockerfile: docker/dev.Dockerfile
       context: .

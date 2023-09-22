@@ -1,13 +1,23 @@
-use std::fs;
 use std::env;
+//use serde::{Serialize};
+use serde_json;
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::io::prelude::*;
+
+#[macro_use] extern crate serde_derive;
 
 enum StatusCode {
     Ok = 200,
     NotFound = 404
 }
+
+#[derive(Serialize)]
+struct Response {
+    success: bool,
+    message: String
+}
+
 fn main() {
     let addr = String::from("0.0.0.0");
     let port = env::var("PORT").unwrap_or(String::from("3000"));
@@ -29,11 +39,23 @@ fn handle_connection(mut stream: TcpStream) {
 
     let get = b"GET / HTTP/1.1\r\n";
 
-    let (status_code, filename) =
+    let (status_code, response_data) =
         if buffer.starts_with(get) {
-            (StatusCode::Ok, "index.html")
+            (
+                StatusCode::Ok,
+                Response {
+                    success: true,
+                    message: "Hello from Rust".to_string()
+                }
+            )
         } else {
-            (StatusCode::NotFound, "404.html")
+            (
+                StatusCode::NotFound,
+                Response {
+                    success: false,
+                    message: "Error from Rust".to_string()
+                }
+            )
         };
 
     let status_line = match status_code {
@@ -41,8 +63,8 @@ fn handle_connection(mut stream: TcpStream) {
         StatusCode::NotFound => "HTTP/1.1 404 NOT FOUND",
     };
 
-    let contents = fs::read_to_string(filename).unwrap();
-    let response = format!("{}\r\n\r\n{}", status_line, contents);
+    let contents = serde_json::to_string(&response_data).expect("Serialization failed");
+    let response = format!("{}\r\nContent-type: application/json\r\n\r\n{}", status_line, contents);
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();

@@ -10,4 +10,9 @@ function run
     docker run -it --network=host docker-rust-seed
 }
 
+function sh
+{
+    docker compose exec app sh
+}
+
 "$@"
