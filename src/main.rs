@@ -64,7 +64,8 @@ fn handle_connection(mut stream: TcpStream) {
     };
 
     let contents = serde_json::to_string(&response_data).expect("Serialization failed");
-    let response = format!("{}\r\nContent-type: application/json\r\n\r\n{}", status_line, contents);
+    let content_type = "Content-type: application/json";
+    let response = format!("{}\r\n{}\r\n\r\n{}", status_line, content_type, contents);
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
