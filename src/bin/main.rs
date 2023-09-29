@@ -1,6 +1,7 @@
 use std::env;
 use std::thread;
 use std::time::Duration;
+use docker_rust_seed::ThreadPool;
 use serde_json;
 use std::net::TcpListener;
 use std::net::TcpStream;
@@ -24,11 +25,18 @@ fn main() {
     let port = env::var("PORT").unwrap_or(String::from("3000"));
     let listener = TcpListener::bind(addr + ":" + &port).unwrap();
 
+    let pool = ThreadPool::new(10);
+
     print!("Server Started \n");
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        thread::spawn(|| {
+       
+        // thread::spawn(|| {
+        //     handle_connection(stream);
+        // });
+
+        pool.execute(|| {
             handle_connection(stream);
         });
     }
