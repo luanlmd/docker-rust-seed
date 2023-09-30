@@ -26,7 +26,11 @@ fn main() {
 
     print!("Server Started \n");
 
+    let mut count = 0;
+
     for stream in listener.incoming() {
+        count += 1;
+        println!("Connection #{}", count);
         let stream = stream.unwrap();
        
         thread::spawn(|| {
