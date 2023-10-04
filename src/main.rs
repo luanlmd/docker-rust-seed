@@ -1,4 +1,5 @@
 use std::thread;
+use std::env;
 use std::time::Duration;
 use serde_derive::Serialize;
 use std::net::SocketAddr;
@@ -21,7 +22,8 @@ async fn main() {
     .route("/", get(root))
     .route("/sleep", get(sleep));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let port = env::var("PORT").unwrap_or("3000".to_string()).parse::<u16>().unwrap_or(3000);
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
     axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
 }
 
