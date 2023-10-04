@@ -1,13 +1,8 @@
-use std::thread;
 use std::env;
 use std::time::Duration;
 use serde_derive::Serialize;
 use std::net::SocketAddr;
-use axum::{
-    routing::get,
-    http::StatusCode,
-    Json, Router,
-};
+use axum::{ routing::get, http::StatusCode, Json, Router };
 
 #[derive(Serialize)]
 struct Response {
@@ -39,7 +34,8 @@ async fn root() -> (StatusCode, Json<Response>)
 }
 
 async fn sleep() -> (StatusCode, Json<Response>) {
-    thread::sleep(Duration::from_secs(5));
+    tokio::time::sleep(Duration::from_secs(5)).await;
+
     let response = Response {
         success: true,
         message: "Sleep from Rust".to_string()
