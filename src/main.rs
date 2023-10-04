@@ -2,7 +2,7 @@ use std::env;
 use std::time::Duration;
 use serde_derive::Serialize;
 use std::net::SocketAddr;
-use axum::{ routing::get, http::StatusCode, Json, Router };
+use axum::{ routing::get, middleware::{self, Next}, http::{StatusCode, Request}, Json, Router, response::IntoResponse };
 
 #[derive(Serialize)]
 struct Response {
@@ -14,13 +14,19 @@ struct Response {
 async fn main() {
     let app = Router::new()
     .route("/", get(root))
-    .route("/sleep", get(sleep));
+    .route("/sleep", get(sleep))
+    .layer(middleware::from_fn(log_requets));
 
-    let port = env::var("PORT").unwrap_or("3000".to_string()).parse::<u16>().unwrap_or(3000);
+    let port = env::var("PORT").unwrap_or(String::from("3000")).parse::<u16>().unwrap_or(3000);
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
 
     println!("Starting server on {}", addr);
     axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
+}
+
+async fn log_requets(req: Request<axum::body::Body>, next: Next<axum::body::Body>) -> Result<impl IntoResponse, (StatusCode, String)> {
+    println!("{} {}", req.method(), req.uri());
+    Ok(next.run(req).await)
 }
 
 async fn root() -> (StatusCode, Json<Response>)
