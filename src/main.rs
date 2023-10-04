@@ -16,14 +16,15 @@ struct Response {
 }
 
 #[tokio::main]
-
 async fn main() {
     let app = Router::new()
     .route("/", get(root))
     .route("/sleep", get(sleep));
 
     let port = env::var("PORT").unwrap_or("3000".to_string()).parse::<u16>().unwrap_or(3000);
-    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
+
+    println!("Starting server on {}", addr);
     axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
 }
 
