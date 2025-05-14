@@ -13,7 +13,7 @@ jobs:
 
       - name: SemVer
         id: semver
-        uses: luanlmd/semver-composite-action@516e52111486b122bf65714372090675c8838319
+        uses: luanlmd/semver-composite-action@v5
 
       - name: Test SemVer
         run: |
