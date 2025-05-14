@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, feature-*, hotfix-*, release-* ]
 
 jobs:
   build:
@@ -10,6 +10,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: SemVer
+        with:
+          repo-path: ${{ github.workspace }}
+        id: semver
+        uses: luanlmd/semver-composite-action@v13
+
+      - name: Test SemVer
+        run: |
+          echo "Version: ${{ steps.semver.outputs.version }}"
 
       - name: Docker Build
         run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v${{ github.run_number }}
