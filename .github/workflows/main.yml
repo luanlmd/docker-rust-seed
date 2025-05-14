@@ -15,7 +15,7 @@ jobs:
         with:
           repo-path: ${{ github.workspace }}
         id: semver
-        uses: luanlmd/semver-composite-action@v12
+        uses: luanlmd/semver-composite-action@v13
 
       - name: Test SemVer
         run: |
