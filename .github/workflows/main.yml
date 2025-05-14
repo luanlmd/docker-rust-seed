@@ -12,7 +12,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SemVer
-        uses: luanlmd/semver-composite-action@a45f302a4aa45a0496dae5ca2000ea737571343f
+        id: semver
+        uses: luanlmd/semver-composite-action@516e52111486b122bf65714372090675c8838319
+
+      - name: Test SemVer
+        run: |
+          echo "Version: ${{ steps.semver.outputs.version }}"
 
       - name: Docker Build
         run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v${{ github.run_number }}
