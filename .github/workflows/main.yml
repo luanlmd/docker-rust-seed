@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master, feature-*, hotfix-*, release-* ]
+    branches: [ master]
 
 jobs:
   build:
@@ -17,20 +17,16 @@ jobs:
         with:
           repo-path: ${{ github.workspace }}
         id: semver
-        uses: luanlmd/semver-composite-action@v17
-
-      - name: Test SemVer
-        run: |
-          echo "Version: ${{ steps.semver.outputs.version }}"
+        uses: luanlmd/semver-composite-action@v1.0.0
 
       - name: Docker Build
-        run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v${{ github.run_number }}
+        run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}
 
       - name: Docker Login
         run: docker login -u luanlmd -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Docker Push
-        run: docker push luanlmd/docker-rust-seed:v${{ github.run_number }}
+        run: docker push luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}
 
       - uses: google-github-actions/auth@v1
         with:
@@ -41,4 +37,4 @@ jobs:
         with:
           region: southamerica-east1
           service: 'rust'
-          image: 'luanlmd/docker-rust-seed:v${{ github.run_number }}'
+          image: 'luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}'
