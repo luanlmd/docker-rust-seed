@@ -20,13 +20,13 @@ jobs:
         uses: luanlmd/semver-composite-action@v1.0.0
 
       - name: Docker Build
-        run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}
+        run: docker build . -f docker/prod.Dockerfile -t luanlmd/docker-rust-seed:${{ steps.semver.outputs.version }}
 
       - name: Docker Login
         run: docker login -u luanlmd -p ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Docker Push
-        run: docker push luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}
+        run: docker push luanlmd/docker-rust-seed:${{ steps.semver.outputs.version }}
 
       - uses: google-github-actions/auth@v1
         with:
@@ -37,4 +37,4 @@ jobs:
         with:
           region: southamerica-east1
           service: 'rust'
-          image: 'luanlmd/docker-rust-seed:v$ ${{ steps.semver.outputs.version }}'
+          image: 'luanlmd/docker-rust-seed:${{ steps.semver.outputs.version }}'
